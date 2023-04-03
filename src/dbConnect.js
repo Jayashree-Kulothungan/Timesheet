@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
 // Connection URI
-const uri = "mongodb+srv://deepakhariharan1999:7PCUpiRxs0LwkAps@cluster0.nx9pp8n.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://";
 
 // Create a new MongoClient
 const client = new MongoClient(uri, { useNewUrlParser: true });
