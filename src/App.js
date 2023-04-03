@@ -21,6 +21,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import './dbConnect.js';
 
 const locales = {
 	"en-US": require("date-fns/locale/en-US"),
@@ -177,22 +178,22 @@ function App() {
 				name="Event Series"
 				dates='[
   {
-    "name":"Task 1",
-    "description":"This is the first part to check the Add to Calendar Button script at [url]https://add-to-calendar-button.com/[/url]",
+    "name":"Event 1",
+    "description":"This is the first part to check the Add to Calendar Button script",
     "startDate":"today+3",
     "startTime":"10:15",
     "endTime":"23:30"
   },
   {
-    "name":"Task 2",
-    "description":"This is the third part to check the Add to Calendar Button script at [url]https://add-to-calendar-button.com/[/url]",
+    "name":"Event 2",
+    "description":"This is the third part to check the Add to Calendar Button script",
     "startDate":"today+8",
     "startTime":"09:00",
     "endTime":"19:00"
   },
   {
-    "name":"Task 3",
-    "description":"This is the second part to check the Add to Calendar Button script at [url]https://add-to-calendar-button.com/[/url]",
+    "name":"Event 3",
+    "description":"This is the second part to check the Add to Calendar Button script",
     "startDate":"today+5",
     "startTime":"11:30",
     "endTime":"20:00"

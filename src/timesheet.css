@@ -1,0 +1,139 @@
+/*ADDED CODE FOR NAV BAR*/
+nav {
+    background-color: #6c63ff;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    margin-left: 0;
+    width: 100%;
+    z-index: 9999;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  
+  nav li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  
+  nav a {
+    color: #fff;
+    display: block;
+    font-size: 18px;
+    padding: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  nav a:hover {
+    background-color: #555;
+  }
+  
+  @media screen and (max-width: 768px) {
+    nav ul {
+      display: none;
+    }
+  
+    nav li {
+      display: block;
+      text-align: center;
+    }
+  
+    nav a {
+      border-bottom: 1px solid #fff;
+      display: inline-block;
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+    }
+  
+    nav a:hover {
+      background-color: #555;
+      color: #fff;
+    }
+  
+    .menu-icon {
+      color: #fff;
+      cursor: pointer;
+      display: block;
+      font-size: 24px;
+      padding: 20px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: all 0.3s ease;
+    }
+  
+    .menu-icon:hover {
+      background-color: #555;
+    }
+  
+    .menu-icon.active {
+      background-color: #555;
+      color: #fff;
+    }
+  
+    nav ul.active {
+      display: block;
+    }
+  }
+
+  /* Submit and manage approvers button styles */
+#submit-timesheet,
+#manage-approvers {
+    background-color: #6c63ff;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    padding-top: 1%;
+}
+
+#manage-approvers{
+    margin-left: 43%;
+}
+
+
+#submit-timesheet:hover,
+#manage-approvers:hover {
+    background-color: #544aff;
+}
+
+#save-timesheet,
+#copy-last-timesheet {
+    background-color: #7393B3;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+
+}
+
+#save-timesheet:hover,
+#copy-last-timesheet:hover  {
+    background-color: grey;
+}
+/* Employee name and timesheet status styles */
+#employee-name {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+#timesheet-status {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#add-to-calendar-button{
+padding-top:  100%;
+}
