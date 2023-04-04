@@ -2,7 +2,7 @@ import format from "date-fns/format";
 import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -20,9 +20,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import Moment from "moment";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import './dbConnect.js';
-
+import "./dbConnect.js";
+import axios from "axios";
 const locales = {
 	"en-US": require("date-fns/locale/en-US"),
 };
@@ -34,41 +35,49 @@ const localizer = dateFnsLocalizer({
 	locales,
 });
 const theme = createTheme();
-const events = [
-	{
-		title: "",
-		startDate: "",
-		startTime: "",
-		endTime: "",
-	},
-];
 
 function App() {
-	const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
-	const [allEvents, setAllEvents] = useState(events);
-
-	function handleAddEvent() {
-		for (let i = 0; i < allEvents.length; i++) {
-			const d1 = new Date(allEvents[i].start);
-			const d2 = new Date(newEvent.start);
-			const d3 = new Date(allEvents[i].end);
-			const d4 = new Date(newEvent.end);
-			/*
-          console.log(d1 <= d2);
-          console.log(d2 <= d3);
-          console.log(d1 <= d4);
-          console.log(d4 <= d3);
-            */
-
-			if ((d1 <= d2 && d2 <= d3) || (d1 <= d4 && d4 <= d3)) {
-				alert("CLASH");
-				break;
-			}
-		}
-
-		setAllEvents([...allEvents, newEvent]);
+	const [startDate, setStartDate] = useState("");
+	const [startTime, setStartTime] = useState("");
+	const [endTime, setEndTime] = useState("");
+	const [name, setName] = useState("");
+	const [desc, setDesc] = useState("");
+	const [slot, setSlot] = useState([]);
+	async function handleAddEvent(event) {
+		event.preventDefault();
+		let events = {
+			name: name,
+			description: desc,
+			startDate: Moment(new Date(startDate["$d"])).format("YYYY-MM-DD"),
+			startTime: Moment(new Date(startTime["$d"])).format("HH:mm"),
+			endTime: Moment(new Date(endTime["$d"])).format("HH:mm"),
+		};
 		console.log(events);
-		console.log(allEvents);
+		await axios.post("http://localhost:8082/timesheet", events).then((res) => {
+			console.log(res.data);
+			getSlots();
+		});
+	}
+	useEffect(() => {
+		getSlots();
+		console.log(slot);
+	}, []);
+
+	async function getSlots() {
+		await axios.get("http://localhost:8082/timesheet").then((res) => {
+			//console.log(res.data);
+			setSlot(res.data);
+		});
+	}
+
+	function formatDate(slots) {
+		let timeSlot = {
+			title: slots["name"],
+			start: slots["startDate"] + "T" + slots["startTime"] + ":00:000Z",
+			end: slots["startDate"] + "T" + slots["startTime"] + ":00:000Z",
+		};
+		console.log(timeSlot);
+		return timeSlot;
 	}
 
 	return (
@@ -87,29 +96,29 @@ function App() {
 						<Typography component="h1" variant="h5">
 							Add New Event
 						</Typography>
-						<Box component="form" noValidate sx={{ mt: 1 }}>
+						<Box
+							component="form"
+							onSubmit={handleAddEvent}
+							noValidate
+							sx={{ mt: 1 }}
+						>
 							<TextField
 								margin="normal"
 								required
 								fullWidth
-								id="title"
-								label="Add title"
-								name="title"
+								id="name"
+								label="Add name"
+								name="name"
 								autoFocus
-								value={newEvent.title}
-								onChange={(e) =>
-									setNewEvent({ ...newEvent, title: e.target.value })
-								}
+								onChange={(e) => setName(e.target.value)}
 							/>
 							<LocalizationProvider dateAdapter={AdapterDayjs}>
 								<DemoContainer components={["DatePicker"]}>
 									<DatePicker
 										label="Start Date"
-										value={newEvent.startDate}
 										defaultValue={dayjs(new Date())}
-										onChange={(startDate) =>
-											setNewEvent({ ...newEvent, startDate })
-										}
+										value={startDate}
+										onChange={(startDate) => setStartDate(startDate)}
 									/>
 								</DemoContainer>
 							</LocalizationProvider>
@@ -117,22 +126,28 @@ function App() {
 								<DemoContainer components={["TimePicker", "TimePicker"]}>
 									<TimePicker
 										label="Start Time"
-										value={newEvent.startTime}
 										defaultValue={dayjs(new Date() + "T15:30")}
-										onChange={(startTime) =>
-											setNewEvent({ ...newEvent, startTime })
-										}
+										value={startTime}
+										onChange={(startTime) => setStartTime(startTime)}
 									/>
 									<TimePicker
 										label="End Time"
-										value={newEvent.endTime}
 										defaultValue={dayjs(new Date() + "T15:30")}
-										onChange={(endTime) =>
-											setNewEvent({ ...newEvent, endTime })
-										}
+										value={endTime}
+										onChange={(endTime) => setEndTime(endTime)}
 									/>
 								</DemoContainer>
 							</LocalizationProvider>
+							<TextField
+								margin="normal"
+								required
+								fullWidth
+								id="description"
+								label="Add Description"
+								name="description"
+								autoFocus
+								onChange={(e) => setDesc(e.target.value)}
+							/>
 							<Button
 								type="submit"
 								fullWidth
@@ -146,60 +161,20 @@ function App() {
 					</Box>
 				</Container>
 			</ThemeProvider>
-			<h1>Calendar</h1>
-			<h2>Add New Event</h2>
-			<div>
-				<input
-					type="text"
-					placeholder="Add Title"
-					style={{ width: "20%", marginRight: "10px" }}
-					value={newEvent.title}
-					onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-				/>
-				<input
-					type="date"
-					value={newEvent.start}
-					onChange={(start) => setNewEvent({ ...newEvent, start })}
-				/>
 
-				<button stlye={{ marginTop: "10px" }} onClick={handleAddEvent}>
-					Add Event
-				</button>
-			</div>
-			<Calendar
-				localizer={localizer}
-				events={allEvents}
-				startAccessor="start"
-				endAccessor="end"
-				style={{ height: 500, margin: "50px" }}
-			/>
+			{
+				<Calendar
+					localizer={localizer}
+					startAccessor="start"
+					endAccessor="end"
+					style={{ height: 500, margin: "50px" }}
+				/>
+			}
 			<add-to-calendar-button
 				style={{ paddingTop: "50%" }}
 				name="Event Series"
-				dates='[
-  {
-    "name":"Event 1",
-    "description":"This is the first part to check the Add to Calendar Button script",
-    "startDate":"today+3",
-    "startTime":"10:15",
-    "endTime":"23:30"
-  },
-  {
-    "name":"Event 2",
-    "description":"This is the third part to check the Add to Calendar Button script",
-    "startDate":"today+8",
-    "startTime":"09:00",
-    "endTime":"19:00"
-  },
-  {
-    "name":"Event 3",
-    "description":"This is the second part to check the Add to Calendar Button script",
-    "startDate":"today+5",
-    "startTime":"11:30",
-    "endTime":"20:00"
-  }
-]'
-				timeZone="America/Los_Angeles"
+				dates={JSON.stringify(slot)}
+				timeZone="America/Halifax"
 				location="World Wide Web"
 				options="Outlook.com"
 				lightMode="bodyScheme"
